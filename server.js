@@ -5,6 +5,8 @@ import authRoutes from './routes/auth.routes.js'
 
 dotenv.config()
 
+const PORT = process.env.PORT || 3000   
+
 const app = express()
 
 app.use(cors({ origin: "*" }))
@@ -16,6 +18,6 @@ app.get("/", (req, res) => {
     res.send("Fonctionne Bien")
 })
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`Serveur lancé sur le port ${process.env.PORT}`)
 })
