@@ -1,22 +1,27 @@
-import db from '../config/db.js'
+import db from "../config/db.js";
 
 const User = {
 
-    create: (name, email, password, callback) => {
-        const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)"
-        db.query(sql, [name, email, password], callback)
+    create: async (name, email, password) => {
+
+        return await db.query(
+            `INSERT INTO users(name,email,password)
+             VALUES($1,$2,$3)`,
+            [name, email, password]
+        );
+
     },
 
-    findByEmail: (email, callback) => {
-        const sql = "SELECT * FROM users WHERE email = ?"
-        db.query(sql, [email], callback)
-    },
+    findByEmail: async (email) => {
 
-    findById: (id, callback) => {
-        const sql = "SELECT * FROM users WHERE id = ?"
-        db.query(sql, [id], callback)
-    },
+        return await db.query(
+            `SELECT * FROM users
+             WHERE email = $1`,
+            [email]
+        );
 
-}
+    }
 
-export default User
+};
+
+export default User;

@@ -1,22 +1,38 @@
-import mysql from 'mysql2'
-import dotenv from 'dotenv'
+import pg from "pg";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD
-})
+const { Pool } = pg;
 
-db.connect((err) => {
-    if(err){
-        console.log("Erreur MYSQL", err); 
-    }else {
-        console.log("MySQL connecté");
-        
+const db = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
     }
-})
+});
+
+db.connect()
+    .then(async () => {
+
+        console.log("PostgreSQL connecté");
+
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role VARCHAR(50) DEFAULT 'user',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        console.log("Table users vérifiée");
+
+    })
+    .catch(err => {
+        console.error("Erreur PostgreSQL :", err);
+    });
 
 export default db;

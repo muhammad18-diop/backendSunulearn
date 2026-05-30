@@ -3,63 +3,96 @@ import User from "../models/user.model.js"
 import generateToken from "../utils/generateToken.js"
 
 export const signup = async (req, res) => {
-    const { name, email, password } = req.body
 
-    User.findByEmail(email, async (err, results) => {
-        if (err) return res.status(500).json(err)
+    try {
 
-        if (results.length > 0) {
+        const { name, email, password } = req.body;
+
+        const existingUser =
+            await User.findByEmail(email);
+
+        if (existingUser.rows.length > 0) {
             return res.status(400).json({
                 message: "Email déjà utilisé"
-            })
+            });
         }
 
-        const mdpCacher = await bcrypt.hash(password, 10)
+        const hashedPassword =
+            await bcrypt.hash(password, 10);
 
-        User.create(name, email, mdpCacher, (err, result) => {
-            if (err) {
-                console.log(err)
-                return res.status(500).json(err)
-            }
-            return res.status(201).json({
-                message: "Utilisateur créé"
-            })
-        })
-    })
-}
+        await User.create(
+            name,
+            email,
+            hashedPassword
+        );
 
-export const login = (req, res) => {
-    const { email, password } = req.body
+        res.status(201).json({
+            message: "Utilisateur créé"
+        });
 
-    User.findByEmail(email, async (err, results) => {
-        if (err) return res.status(500).json(err)
+    } catch (error) {
 
-        if (results.length === 0) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Erreur serveur"
+        });
+
+    }
+
+};
+
+export const login = async (req, res) => {
+
+    try {
+
+        const { email, password } = req.body;
+
+        const result =
+            await User.findByEmail(email);
+
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 message: "Utilisateur introuvable"
-            })
+            });
         }
 
-        const user = results[0]
-        const validPassword = await bcrypt.compare(password, user.PASSWORD)
+        const user = result.rows[0];
+
+        const validPassword =
+            await bcrypt.compare(
+                password,
+                user.password
+            );
 
         if (!validPassword) {
             return res.status(401).json({
-                message: "Email ou mot de passe incorrect"
-            })
+                message:
+                    "Email ou mot de passe incorrect"
+            });
         }
 
-        const token = generateToken(user.id)
+        const token =
+            generateToken(user.id);
 
-        return res.json({
+        res.json({
             message: "Connexion réussie",
             token,
             user: {
                 id: user.id,
                 name: user.name,
-                email: user.email,
-                role: user.role
+                email: user.email
             }
-        })
-    })
-}
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Erreur serveur"
+        });
+
+    }
+
+};
