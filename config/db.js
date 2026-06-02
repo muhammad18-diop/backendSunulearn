@@ -35,4 +35,4 @@ db.connect()
         console.error("Erreur PostgreSQL :", err);
     });
 
-export default db;
+export default db; 
