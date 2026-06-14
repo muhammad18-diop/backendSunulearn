@@ -2,7 +2,6 @@ import express from "express";
 import nodemailer from "nodemailer";
 import pool from "../config/db.js";
 
-
 const router = express.Router();
 
 router.post("/send-notification", async (req, res) => {
@@ -14,16 +13,22 @@ router.post("/send-notification", async (req, res) => {
     );
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        
+        rejectUnauthorized: false 
+      }
     });
 
     for (const user of users.rows) {
       await transporter.sendMail({
-        from: `"SunuLearn" <${process.env.EMAIL_USER}>`,
+        from: `"SunuLearn" <${process.env.EMAIL_USER}>`, // Correction de la syntaxe ici
         to: user.email,
         subject,
         html: `
@@ -38,7 +43,7 @@ router.post("/send-notification", async (req, res) => {
 
     res.json({
       success: true,
-      message:` ${users.rows.length} emails envoyés,`
+      message: `${users.rows.length} emails envoyés`, 
     });
   } catch (error) {
     console.error(error);
