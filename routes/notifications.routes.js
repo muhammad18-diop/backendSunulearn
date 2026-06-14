@@ -1,10 +1,15 @@
 import express from "express";
-import { Resend } from "resend";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 import pool from "../config/db.js";
 
 const router = express.Router();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+let defaultClient = SibApiV3Sdk.ApiClient.instance;
+let apiKey = defaultClient.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 router.post("/send-notification", async (req, res) => {
   try {
@@ -15,13 +20,21 @@ router.post("/send-notification", async (req, res) => {
     );
 
     const results = await Promise.all(
-      users.rows.map(async (user) => {
-        return resend.emails.send({
-          from: "SunuLearn <onboarding@resend.dev>",
-          to: user.email,
+      users.rows.map((user) => {
+        return tranEmailApi.sendTransacEmail({
+          sender: {
+            email: "mouhamednabidiop18@gmail.com", 
+            name: "SunuLearn",
+          },
+          to: [
+            {
+              email: user.email,
+              name: user.name || "",
+            },
+          ],
           subject: subject,
-          html: `
-            <div style="font-family:Arial,sans-serif">
+          htmlContent: `
+            <div style="font-family:Arial">
               <h2>Bonjour ${user.name || ""}</h2>
               <p>${message}</p>
               <p>L'équipe SunuLearn</p>
@@ -38,11 +51,11 @@ router.post("/send-notification", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Erreur email:", error);
+    console.error("Erreur Brevo:", error);
 
     res.status(500).json({
       success: false,
-      message: "Erreur lors de l'envoi",
+      message: "Erreur envoi email",
       error: error.message,
     });
   }
