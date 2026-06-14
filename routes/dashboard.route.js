@@ -7,6 +7,6 @@ import {adminOnly} from "../middlewares/adminOnly.middleware.js"
 const router = express.Router();
 
 
-router.get("/stats", protect, getStats);
+router.get("/stats", adminOnly, getStats);
 
 export default router;
