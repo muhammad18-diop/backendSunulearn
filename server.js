@@ -54,7 +54,7 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
             },
             actions: {
                 
-               return_url: "http://127.0.0.1:5500/frontend/programmes.html?payment=success"
+               return_url: "https://muhammad18-diop.github.io/frontendSunulearn/programmes.html?payment=success"
             }
         };
 
