@@ -8,6 +8,7 @@ import courseRoutes from "./routes/cours.route.js";
 import userRoutes from "./routes/userdashboard.route.js"
 import userRoutes1 from "./routes/userRoutes..js"
 import notification from "./routes/notifications.routes.js"
+import db from "./config/db.js"
 
 dotenv.config();
 
@@ -54,7 +55,7 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
             },
             actions: {
                 
-               return_url: "https://muhammad18-diop.github.io/frontendSunulearn/programmes.html?payment=success"
+               return_url: "programmes.html?payment=success"
             }
         };
 
@@ -102,6 +103,19 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
     }
 });
 
+
+app.post("/api/paydunya/webhook", async(req, res) => {
+    try {
+        if(req.body.status === "completed"){
+            const userId = req.body.custom_data.userId;
+            await db.query("UPDATE users SET payer = TRUE WHERE id = $1", [userId])
+        }
+
+        res.sendStatus(200);
+    } catch (error) {
+        
+    }
+})
 
 
 

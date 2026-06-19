@@ -35,7 +35,7 @@ router.post("/send-notification", async (req, res) => {
           subject: subject,
           htmlContent: `
             <div style="font-family:Arial">
-              <h2>Bonjour ${user.name || ""}</h2>
+              <h3>Bonjour ${user.name || ""}</h3>
               <p>${message}</p>
               <p>L'équipe SunuLearn</p>
             </div>
