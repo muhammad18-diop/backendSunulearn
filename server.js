@@ -55,7 +55,7 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
             },
             actions: {
                 
-               return_url: "programmes.html?payment=success"
+               return_url: "http://127.0.0.1:5500/programmes.html?payment=success"
             }
         };
 
