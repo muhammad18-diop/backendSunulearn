@@ -55,7 +55,7 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
             },
             actions: {
                 
-               return_url: "http://127.0.0.1:5500/frontend/programmes.html?payment=success"
+               return_url: "https://muhammad18-diop.github.io/frontendSunulearn/frontend/programmes.html?payment=success"
             }
         };
 
@@ -104,18 +104,7 @@ app.post("/api/paydunya/create-payment", async (req, res) => {
 });
 
 
-app.post("/api/paydunya/webhook", async(req, res) => {
-    try {
-        if(req.body.status === "completed"){
-            const userId = req.body.custom_data.userId;
-            await db.query("UPDATE users SET payer = TRUE WHERE id = $1", [userId])
-        }
 
-        res.sendStatus(200);
-    } catch (error) {
-        
-    }
-})
 
 
 
