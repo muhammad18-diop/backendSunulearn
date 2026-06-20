@@ -32,7 +32,7 @@ const fileFilter = (req, file, cb) => {
         (file.fieldname === "pdfFile" && allowedPdf.includes(file.mimetype)) ||
         (file.fieldname === "imageFile" && allowedImages.includes(file.mimetype))
     ) {
-        cb(null, true);
+        cb(null, true)
     } else {
         cb(new Error("Format de fichier non supporté"), false);
     }
