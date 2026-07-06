@@ -5,7 +5,7 @@ export const createCourseInDB = async (titre, description, imageUrl, pdfUrl, cat
         const queryText = `
             INSERT INTO courses (titre, description, image, lien, categorie)
             VALUES ($1, $2, $3, $4, $5)
-            RETURNING *
+            RETURNING *;
         `;
         const values = [titre, description, imageUrl, pdfUrl, categorie];
         const result = await db.query(queryText, values);
