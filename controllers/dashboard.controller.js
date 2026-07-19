@@ -1,50 +1,19 @@
-export const addCourse = async (req, res) => {
+import { getDashboardStats } from "../models/dashboard.model.js"; 
+
+export const getStats = async (req, res) => {
     try {
-        const { titre, description, categorie } = req.body;
-
+        const stats = await getDashboardStats();
         
-        if (!titre || !description) {
-            return res.status(400).json({
-                success: false,
-                message: "Titre et description obligatoires"
-            });
-        }
-
-        if (!req.files?.pdfFile?.[0]) {
-            return res.status(400).json({
-                success: false,
-                message: "PDF obligatoire"
-            });
-        }
-
         
-        console.log(req.files);
-        
-        const pdfUrl = req.files.pdfFile[0].path;
-        const imageUrl = req.files.imageFile?.[0]?.path || null;
-
-        
-        const newCourse = {
-            titre,
-            description,
-            categorie,
-            pdfUrl,
-            imageUrl
-        };
-
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
-            message: "Cours uploadé avec succès",
-            course: newCourse
+            stats: stats
         });
-
     } catch (error) {
-        console.error("UPLOAD ERROR:", error);
-
+        console.error("Erreur contrôleur dashboard :", error);
         return res.status(500).json({
             success: false,
-            message: "Erreur serveur",
-            error: error.message
+            message: "Erreur interne du serveur lors de la récupération des statistiques."
         });
     }
 };
