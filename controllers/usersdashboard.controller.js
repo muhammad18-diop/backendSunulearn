@@ -1,6 +1,6 @@
 import { getAllUsers, deleteUserById } from "../models/usersdashoard.model.js";
 
-// GET USERS
+
 export const getUsers = async (req, res) => {
     try {
 
