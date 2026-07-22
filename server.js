@@ -9,6 +9,7 @@ import userRoutes from "./routes/userdashboard.route.js"
 import userRoutes1 from "./routes/userRoutes..js"
 import notification from "./routes/notifications.routes.js"
 import db from "./config/db.js"
+import devoirRoute from "./routes/devoir.route.js"
 
 dotenv.config();
 
@@ -23,7 +24,8 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/utilisateurs", userRoutes)
 app.use("/uploads", express.static("uploads"))
 app.use("/api/user", userRoutes1);
-app.use("/api/admin", notification)
+app.use("/api/admin", notification);
+app.use("/api/devoirs", devoirRoute)
 
 console.log(process.env.PAYDUNYA_MASTER_KEY)
 
